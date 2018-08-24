@@ -10,15 +10,17 @@ EXPOSE 8080
 # The database host (resolves to ip address)
 ENV DATABASE_HOST=placeholder_since_env_must_have_a_default_value
 
-# The project version
 ARG PROJECT_NAME
 ARG PROJECT_VERSION
-
-# The application's jar file
 ARG JAR_FILE=target/${PROJECT_NAME}-${PROJECT_VERSION}.jar
 
 # Add the application's jar to the container
-ADD ${JAR_FILE} ${PROJECT_NAME}.jar
+ADD ${JAR_FILE} demo.jar
 
 # Run the jar file
 ENTRYPOINT ["java","-jar","/demo.jar", "--spring.datasource.url", "jdbc:postgresql://${DATABASE_HOST}:5432/postgres"]
+
+
+
+# docker build . --build-arg PROJECT_NAME=spring-webflux-demo --build-arg  PROJECT_VERSION=0.0.1-SNAPSHOT -t spring-webflux-demo
+# docker run -itd -e DATABASE_HOST=172.17.0.2 -p 8080:8080 spring-webflux-demo

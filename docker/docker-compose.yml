@@ -6,6 +6,7 @@ services:
     image: postgres
     restart: always
     environment:
+      POSTGRES_USER: $POSTGRES_USER
       POSTGRES_PASSWORD: $POSTGRES_PASSWORD
     ports:
     - "${POSTGRES_PORT}"
@@ -14,18 +15,18 @@ services:
 
   spring-app:
     build:
-      context: ../$PROJECT_NAME
+      context: ../$PROJECT_NAME_BACKEND
       args:
-        PROJECT_NAME: $PROJECT_NAME
+        PROJECT_NAME_BACKEND: $PROJECT_NAME_BACKEND
         PROJECT_VERSION: $PROJECT_VERSION
     depends_on:
     - db
     environment:
       DATABASE_HOST: db
     ports:
-    - "${APP_PORT}"
+    - "${BACKEND_PORT}"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:${APP_PORT}/actuator/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:${BACKEND_PORT}/actuator/health"]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -52,7 +53,7 @@ services:
     depends_on:
     - spring-app
     ports:
-    - "${FRONTEND_INTERNAL_PORT}"
+    - "${FRONTEND_PORT}"
     networks:
     - mynetwork
 

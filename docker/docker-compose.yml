@@ -1,0 +1,75 @@
+version: '3.2'
+
+services:
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+    ports:
+    - "${POSTGRES_PORT}"
+    networks:
+    - mynetwork
+
+  spring-app:
+    build:
+      context: ../$PROJECT_NAME
+      args:
+        PROJECT_NAME: $PROJECT_NAME
+        PROJECT_VERSION: $PROJECT_VERSION
+    depends_on:
+    - db
+    environment:
+      DATABASE_HOST: db
+    ports:
+    - "${APP_PORT}"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:${APP_PORT}/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+    - mynetwork
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: $PGADMIN_DEFAULT_EMAIL
+      PGADMIN_DEFAULT_PASSWORD: $PGADMIN_DEFAULT_PASSWORD
+    ports:
+    - "${PGADMIN_PORT}"
+    depends_on:
+    - db
+    networks:
+    - mynetwork
+
+  angular-app:
+    build:
+      context: ../$PROJECT_NAME_FRONTEND
+      args:
+        PROJECT_NAME_FRONTEND: $PROJECT_NAME_FRONTEND
+    depends_on:
+    - spring-app
+    ports:
+    - "${FRONTEND_INTERNAL_PORT}"
+    networks:
+    - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge
+
+
+### run by docker-compose
+#  docker-compose -p first up -d --build --force-recreate
+#  docker-compose -p second up -d --build --force-recreate
+#  docker-compose -p third up -d --build --force-recreate
+
+### stop by docker-compose
+#  docker-compose -p first down
+#  docker-compose -p second down
+#  docker-compose -p third down
+
+
+

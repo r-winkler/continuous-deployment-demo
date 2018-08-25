@@ -1,1 +1,1 @@
-{"virtualbox":{"/vagrant":{"guestpath":"/vagrant","hostpath":"/home/rene/vagrant/multi-enviornment","disabled":false,"__vagrantfile":true}}}
+{"virtualbox":{"/vagrant":{"guestpath":"/vagrant","hostpath":"/home/rene/IdeaProjects/continuous-deployment-demo/vagrant/multi-enviornment","disabled":false,"__vagrantfile":true}}}
